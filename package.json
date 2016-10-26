@@ -1,0 +1,24 @@
+{
+  "name": "node-tiny-udp-logger",
+  "version": "1.0.0",
+  "description": "A tiny logger using UDP.",
+  "main": "index.js",
+  "scripts": {
+    "test": "tests.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Clarence-pan/node-tiny-udp-logger.git"
+  },
+  "keywords": [
+    "udp",
+    "logger",
+    "syslog"
+  ],
+  "author": "Clarencep",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Clarence-pan/node-tiny-udp-logger/issues"
+  },
+  "homepage": "https://github.com/Clarence-pan/node-tiny-udp-logger#readme"
+}
