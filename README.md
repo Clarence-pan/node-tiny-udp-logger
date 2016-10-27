@@ -34,7 +34,7 @@ logger.log("Hello world!")
   
 
 ```js
-var logger = require('tiny-udp-logger')({port: 514, host: 'localhost', shareSocket})
+var logger = require('tiny-udp-logger')({port: 514, host: 'localhost', shareSocket: true})
 
 logger.log("Hello world!")
 logger.log("Hello world!")
