@@ -15,6 +15,9 @@
     "logger",
     "syslog"
   ],
+  "files": [
+    "index.js"
+  ],
   "author": "Clarencep",
   "license": "MIT",
   "bugs": {
