@@ -1,33 +1,70 @@
 var dgram = require('dgram');
 
-module.exports = function TinyUdpLogger(port, host) {
+var extend = Object.assign.bind(Object)
+
+/**
+ * Create or construct a TinyUdpLogger
+ * @constructor
+ * @param options {{host, port, shareSocket}}
+ *          - host: which host to send message to, default is localhost
+ *          - port: default use syslog's port
+ *          - shareSocket: whether share socket
+ * @returns {TinyUdpLogger}
+ */
+module.exports = function TinyUdpLogger(options) {
     if (!(this instanceof TinyUdpLogger)) {
-        return new TinyUdpLogger(port, host)
+        return new TinyUdpLogger(options)
     }
 
-    this.port = port || 514 // default use syslog port
-    this.host = host || 'localhost'
+    options = extend({
+        host: 'localhost',  // which host to send message to
+        port: 514,          // default use syslog's port
+        shareSocket: false  // whether share socket
+    }, options)
 
+    var sharedSocket = null
+
+    /**
+     * open socket -- only useful after close -- it will be auto called when constructing
+     */
     this.open = function () {
-        if (!this.socket) {
-            this.socket = dgram.createSocket('udp4')
-        }
-    }.bind(this)
-
-    this.log = function (msg, cb) {
-        if (this.socket) {
-            this.socket.send(msg, this.port, this.host, cb || noop)
-        } else {
-            if (cb) {
-                cb(new Error("Logger already closed."))
-            }
+        if (options.shareSocket && !sharedSocket){
+            sharedSocket = dgram.createSocket('udp4')
         }
     }
 
+    /**
+     * Send a log message
+     * @param msg {string} the log message to be sent
+     * @param cb  {function} the callback which will be called after sent or failed
+     */
+    this.log = function (msg, cb) {
+        if (options.shareSocket) {
+            if (sharedSocket){
+                sharedSocket.send(msg, options.port, options.host, cb || noop)
+            } else {
+                if (cb) {
+                    cb(new Error("Logger already closed."))
+                }
+            }
+        } else {
+            var privateSocket = dgram.createSocket('udp4')
+            privateSocket.send(msg, options.port, options.host, function(){
+                privateSocket.close()
+                if (cb){
+                    cb.apply(this, arguments)
+                }
+            })
+        }
+    }
+
+    /**
+     * close the logger, prevent leaking socket
+     */
     this.close = function () {
-        if (this.socket) {
-            this.socket.close()
-            this.socket = null
+        if (options.shareSocket && sharedSocket){
+            sharedSocket.close()
+            sharedSocket = null
         }
     }
 

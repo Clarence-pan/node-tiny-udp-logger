@@ -4,7 +4,7 @@
   "description": "A tiny logger using UDP.",
   "main": "index.js",
   "scripts": {
-    "test": "tests.js"
+    "test": "tests/index.js"
   },
   "repository": {
     "type": "git",
