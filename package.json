@@ -1,5 +1,5 @@
 {
-  "name": "node-tiny-udp-logger",
+  "name": "tiny-udp-logger",
   "version": "1.0.0",
   "description": "A tiny logger using UDP.",
   "main": "index.js",
